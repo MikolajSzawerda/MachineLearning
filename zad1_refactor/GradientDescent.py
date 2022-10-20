@@ -10,12 +10,13 @@ from Experiment import Experiment, Recorder, DataPoint
 
 class ABCGradient(ABC):
 
-    def __init__(self, lower_bound, upper_boud, max_iterations, num_of_points = 10, num_of_steps = 10):
+    def __init__(self, lower_bound, upper_boud, max_iterations, num_of_points = 10, num_of_steps = 10, label=""):
         self.step_lower_bound = lower_bound
         self.step_upper_bound = upper_boud
         self.max_iterations = max_iterations
         self.num_of_steps = num_of_steps
         self.num_of_points = num_of_points
+        self.label = label
 
     def generate_steps(self, n=1):
         diff = self.step_upper_bound - self.step_lower_bound
@@ -40,16 +41,21 @@ class ABCGradient(ABC):
     def validate_number(self, number):
         return not (isnan(number) or isinf(number))
 
+    def has_converged(self, values):
+        if len(values) < 100: return False
+        return abs(min(values)-max(values))<=1e-2
+
 
 class RandomFixedStepGradient(ABCGradient):
 
-    def __init__(self, lower_bound, upper_boud, max_iterations, num_of_points = 10, num_of_steps = 10):
+    def __init__(self, lower_bound, upper_boud, max_iterations, num_of_points = 10, num_of_steps = 10, label="Random fixed step"):
         super().__init__(lower_bound, upper_boud, max_iterations, num_of_points, num_of_steps)
+        self.label = label
 
     def _process_many_steps(self, func, x0, steps):
         with concurrent.futures.ProcessPoolExecutor() as executor:
             jobs = [executor.submit(self.solve, func, x0, step) for step in steps]
-            experiment = Experiment(func)
+            experiment = Experiment(func, self.label)
             for job in concurrent.futures.as_completed(jobs):
                 experiment.appendRecorder(job.result())
             return experiment
@@ -63,7 +69,7 @@ class RandomFixedStepGradient(ABCGradient):
 
     def _process_many_points(self, func, points, steps):
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            experiment = Experiment(func)
+            experiment = Experiment(func, self.label)
             jobs = [executor.submit(self._iterate_steps, func, point, steps) for point in points]
             for job in concurrent.futures.as_completed(jobs):
                 for recorder in job.result():
@@ -83,7 +89,7 @@ class RandomFixedStepGradient(ABCGradient):
         optimized_value = func(x0)
         gradient = differentiate(func)
         recorder = Recorder(str(step))
-        while self.stop_condition(iteration_count, optimized_value):
+        while self.stop_condition(iteration_count, optimized_value, recorder):
             recorder.pushLog(DataPoint(iteration_count, traversing_point, optimized_value))
             traversing_point = traversing_point - np.dot(step, gradient(traversing_point))
             optimized_value = func(traversing_point)
@@ -91,17 +97,18 @@ class RandomFixedStepGradient(ABCGradient):
         recorder.saveResult(optimized_value)
         return recorder
 
-    def stop_condition(self, iteration_count, optimized_value):
-        return iteration_count <= self.max_iterations and self.validate_number(optimized_value)
+    def stop_condition(self, iteration_count, optimized_value, recorder: "Recorder"):
+        return iteration_count <= self.max_iterations and self.validate_number(optimized_value) and not self.has_converged(recorder.getLastValues(50))
 
 class BacktrackStepGradient(ABCGradient):
 
-    def __init__(self, max_iterations, num_of_points = 10):
+    def __init__(self, max_iterations, num_of_points = 10, label="Backtrack dynamic step"):
         super().__init__(0.0, 1.0, max_iterations, num_of_points, 1)
+        self.label = label
 
     def _process_many_points(self, func, points):
         with concurrent.futures.ProcessPoolExecutor() as executor:
-            experiment = Experiment(func)
+            experiment = Experiment(func, self.label)
             jobs = [executor.submit(self.solve, func, point) for point in points]
             for job in concurrent.futures.as_completed(jobs):
                 experiment.appendRecorder(job.result())
@@ -131,7 +138,7 @@ class BacktrackStepGradient(ABCGradient):
         optimized_value = func(x0)
         gradient = differentiate(func)
         gradient_value = gradient(traversing_point)
-        recorder = Recorder(str("Backtrackt"))
+        recorder = Recorder(str(np.linalg.norm(x0)))
         while self.stop_condition(iteration_count, optimized_value, gradient_value):
             recorder.pushLog(DataPoint(iteration_count, traversing_point, optimized_value))
             step = self.backtrack_search(traversing_point, func, gradient)
@@ -143,5 +150,4 @@ class BacktrackStepGradient(ABCGradient):
         return recorder
 
     def stop_condition(self, iteration_count, optimized_value, gradient_value):
-        # return iteration_count <= self.max_iterations and self.validate_number(optimized_value) and np.linalg.norm(gradient_value) > 1e-5
-        return iteration_count <= self.max_iterations and self.validate_number(optimized_value)
+        return iteration_count <= self.max_iterations and self.validate_number(optimized_value) and np.linalg.norm(gradient_value) > 1e-5

@@ -1,6 +1,8 @@
+import matplotlib
 from matplotlib import pyplot as plt
 import numpy as np
 from Experiment import Experiment, Recorder
+import slugify
 
 
 
@@ -8,6 +10,7 @@ class Plotter:
 
     def __init__(self):
         plt.style.use('ggplot')
+        matplotlib.use('Agg')
 
     def isconverging(self, data):
         data_at_inf = data[-len(data)//10:]
@@ -19,13 +22,16 @@ class Plotter:
             x, y = list(zip(*[(d.iteration, d.y) for d in recorder.logs]))
             ax[0].plot(x, y, label=recorder.name)
             ax[0].set_yscale("log")
+            ax[0].set_title(experiment.label)
             if self.isconverging(y):
                 ax[1].plot(x, y, label=recorder.name)
+                ax[1].set_title(experiment.label+" converging")
                 ax[1].set_yscale("log")
         plt.legend()
         plt.tight_layout()
-        # plt.savefig(title)
-        plt.show()
+        fig.set_size_inches(15, 15)
+        plt.savefig("results/"+experiment.label.replace(' ', '_')+".png", dpi=500)
+        # plt.show()
 
     def comparison_plot(self, *experiments):
         fig, ax = plt.subplots(len(experiments))
@@ -34,10 +40,10 @@ class Plotter:
                 x, y = list(zip(*[(d.iteration, d.y) for d in recorder.logs]))
                 ax[i].plot(x, y, label=recorder.name)
                 ax[i].set_yscale("log")
-        plt.legend()
-        plt.tight_layout()
-        # plt.savefig(title)
-        plt.show()
+                ax[i].set_title(experiment.label)
+        # plt.legend()
+                plt.tight_layout()
+            plt.savefig("results/comparison_"+experiment.label.replace(' ', '_')+".png")
 
     def plot_path(self, experiment: "Experiment"):
         for recorder in experiment.recorders:
