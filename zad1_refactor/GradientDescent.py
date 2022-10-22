@@ -23,7 +23,7 @@ class ABCGradient(ABC):
         return diff * np.random.random_sample(n) + self.step_lower_bound
 
     def generate_points(self, domain):
-        matrix = [(x[0]-x[1])*np.random.random_sample(self.num_of_points)+x[0] for x in domain]
+        matrix = [(x[1]-x[0])*np.random.random_sample(self.num_of_points)+x[0] for x in domain]
         return np.rot90(matrix)
 
     @abstractmethod
@@ -42,8 +42,8 @@ class ABCGradient(ABC):
         return not (isnan(number) or isinf(number))
 
     def has_converged(self, values):
-        if len(values) < 100: return False
-        return abs(min(values)-max(values))<=1e-2
+        if len(values) <= 1: return False
+        return abs(min(values)-max(values))<=1e-15
 
 
 class RandomFixedStepGradient(ABCGradient):
@@ -88,17 +88,18 @@ class RandomFixedStepGradient(ABCGradient):
         iteration_count = 1
         optimized_value = func(x0)
         gradient = differentiate(func)
-        recorder = Recorder(str(step))
+        recorder = Recorder(str(round(step, 4))+" "+str(round(np.linalg.norm(x0), 2)))
+        recorder.pushLog(DataPoint(iteration_count, traversing_point, optimized_value))
         while self.stop_condition(iteration_count, optimized_value, recorder):
-            recorder.pushLog(DataPoint(iteration_count, traversing_point, optimized_value))
             traversing_point = traversing_point - np.dot(step, gradient(traversing_point))
             optimized_value = func(traversing_point)
             iteration_count += 1
+            recorder.pushLog(DataPoint(iteration_count, traversing_point, optimized_value))
         recorder.saveResult(optimized_value)
         return recorder
 
     def stop_condition(self, iteration_count, optimized_value, recorder: "Recorder"):
-        return iteration_count <= self.max_iterations and self.validate_number(optimized_value) and not self.has_converged(recorder.getLastValues(50))
+        return self.validate_number(optimized_value) and not self.has_converged(recorder.getLastValues(10)) and iteration_count <= self.max_iterations
 
 class BacktrackStepGradient(ABCGradient):
 
@@ -139,15 +140,16 @@ class BacktrackStepGradient(ABCGradient):
         gradient = differentiate(func)
         gradient_value = gradient(traversing_point)
         recorder = Recorder(str(np.linalg.norm(x0)))
+        recorder.pushLog(DataPoint(iteration_count, traversing_point, optimized_value))
         while self.stop_condition(iteration_count, optimized_value, gradient_value):
-            recorder.pushLog(DataPoint(iteration_count, traversing_point, optimized_value))
             step = self.backtrack_search(traversing_point, func, gradient)
             gradient_value = gradient(traversing_point)
             traversing_point = traversing_point - np.dot(step, gradient_value)
             optimized_value = func(traversing_point)
             iteration_count += 1
+            recorder.pushLog(DataPoint(iteration_count, traversing_point, optimized_value))
         recorder.saveResult(optimized_value)
         return recorder
 
     def stop_condition(self, iteration_count, optimized_value, gradient_value):
-        return iteration_count <= self.max_iterations and self.validate_number(optimized_value) and np.linalg.norm(gradient_value) > 1e-5
+        return self.validate_number(optimized_value) and np.linalg.norm(gradient_value) > 1e-5 and iteration_count <= self.max_iterations

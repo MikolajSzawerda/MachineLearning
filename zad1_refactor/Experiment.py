@@ -10,9 +10,9 @@ class DataPoint:
 
 class Recorder:
 
-    def __init__(self, name):
+    def __init__(self, label):
         self.logs = []
-        self.name = name
+        self.label = label
         self.result = None
 
     def pushLog(self, data: "tuple[DataPoint]"):
@@ -22,7 +22,7 @@ class Recorder:
         self.result = value
 
     def getLastValues(self, n):
-        return [dp.x for dp in self.logs[-n:]]
+        return [dp.y for dp in self.logs[-n:]]
 
 
 class Experiment:
