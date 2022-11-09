@@ -4,7 +4,6 @@ import numpy as np
 from os.path import join as pjoin
 from collections import namedtuple
 from Experiments import expr
-
 path = "../results"
 gradients = []
 classic_comp9 = [x for x in expr.keys() if 'csc_9' in x]
@@ -23,10 +22,13 @@ def plot(ax, experiments):
         filename = pjoin(path, name + "_br.json")
         df = pd.read_json(filename)
         ax.plot(df['t'], df['population_y'].apply(np.mean), label=desc)
-        ax.plot(df['t'], df['population_y'].apply(np.min), label='min')
-        ax.plot(df['t'], df['population_y'].apply(np.max), label='max')
+        # ax.plot(df['t'], df['population_y'].apply(np.min), label='min')
+        # ax.plot(df['t'], df['population_y'].apply(np.max), label='max')
     ax.set_yscale('log')
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
+    ax.set_ylabel("q(x)")
+    ax.set_xlabel("t", loc="right")
+    ax.get_yaxis().get_major_formatter().labelOnlyBase = False
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.07),
           fancybox=True, shadow=True, ncol=2)
 
 
@@ -38,8 +40,10 @@ def plot_sigma(ax, experiments):
         ax.plot(df['t'], df['population_sigma'].apply(np.mean), label=desc)
         # ax.plot(df['t'], df['population_sigma'].apply(np.min), label=desc)
         # ax.plot(df['t'], df['population_sigma'].apply(np.max), label=desc)
+    ax.set_xlabel("t")
+    ax.set_ylabel("σ(t)")
     # ax.set_yscale('log')
-    ax.legend()
+    # ax.legend()
 
 
 def plot_results_hist(ax, experiments):
@@ -75,24 +79,30 @@ def plot_population_variety(ax, experiments):
         filename = pjoin(path, name+"_br.json")
         df = pd.read_json(filename)
         df['x_mean'] = df['population_x'].apply(lambda x: np.std(np.linalg.norm(x, axis=1)))
-        # df = df[df.x_mean >=1e-12]
+        df = df[df.x_mean >=1e-12]
         ax.plot(df['t'], df['x_mean'], label=expr[name])
     ax.set_yscale("log")
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
-              fancybox=True, shadow=True, ncol=2)
+    # ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.05),
+    #           fancybox=True, shadow=True, ncol=2)
 
 
 if __name__ == "__main__":
-    # se_comp9.remove('sec_9mccm')
-    # current_expr = ['gd_1best', 'csc_1tmces', 'sec_1mcpd']
-    current_expr = ['cls_9best']
+    se_comp9.remove('sec_9mccb')
+    se_comp9.remove('sec_9uccb')
+    se_comp9.remove('sec_9mccs')
+    # current_expr = ['gd_9best', 'csc_9tmces', 'sec_9mcpd']
+    current_expr = se_comp9
     table = summary_table(current_expr)
     table.to_csv(pjoin(path, "gradient_comp.csv"))
     print(table)
     fig, ax = plt.subplots(1)
-    # plot_population_variety(ax, current_expr)
+    fig3, ax3 = plt.subplots(2)
+    fig3.set_size_inches(10, 10)
+    plot_population_variety(ax3[0], current_expr)
+    handles, labels = ax3[0].get_legend_handles_labels()
+    fig3.legend(handles, labels, ncol=5)
     plot(ax, current_expr)
-    # plot_sigma(ax[1], ['cs905'])
+    plot_sigma(ax3[1], current_expr)
     fig2, ax2 = plt.subplots(1)
     plot_results_hist(ax2, current_expr)
     # plot_boxplot(file_results, ax2[1])
@@ -100,3 +110,5 @@ if __name__ == "__main__":
     fig.show()
     fig2.tight_layout()
     fig2.show()
+    fig3.tight_layout()
+    fig3.show()

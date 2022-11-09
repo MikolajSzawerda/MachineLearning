@@ -8,30 +8,6 @@ Entity = namedtuple("Entity", "x value sigma")
 DataPoint = namedtuple("DataPoint", "t population")
 
 
-def strategy_opo(func, x0, **kwargs):
-    logs = []
-    t = 0
-    ls = 0
-    parent = x0
-    sigma = kwargs['sigma']
-    a = kwargs['adaptation']
-    while t <= kwargs['t_max']:
-        x = parent.x + sigma * npr.normal(size=kwargs['dim'])
-        mutant = Entity(x, func(x), sigma)
-        if mutant.value <= parent.value:
-            ls += 1
-            parent = mutant
-        if t % a == 0:
-            if ls / a > 1 / 5:
-                sigma *= 1.22
-            if ls / a < 1 / 5:
-                sigma *= 0.82
-            ls = 0
-        logs.append(DataPoint(t, [mutant, parent]))
-        t += 1
-    return logs
-
-
 def stop_condition(t, **kwargs):
     return t >= kwargs['t_max']
 
@@ -79,7 +55,7 @@ def strategy_evolution(func, init_pop, **kwargs):
         candidate = min(mutants, key=lambda x: x.value)
         if candidate.value <= leader.value:
             leader = candidate
-        mutants.extend(population)
+        # mutants.extend(population)
         population = sorted(mutants, key=lambda x:x.value)[:kwargs['mi']]
         logs.append(DataPoint(t, population))
         t += 1
