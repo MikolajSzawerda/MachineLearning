@@ -1,9 +1,5 @@
 import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
 from os.path import join as pjoin
-from collections import namedtuple
-from Experiments import expr
 from Plotter import summary_table, plot, plot_results_hist, plot_sigma, plot_population_variety
 from Experiments import expr
 from tqdm import tqdm
@@ -13,13 +9,9 @@ path = '../stats2'
 
 def compare_se9():
     se9 = [x for x in expr.keys() if 'se_9' in x]
-    # remove outliers runs
-    # se9.remove('sec_9mccb')
-    # se9.remove('sec_9uccb')
     se9.remove('se_9mcb')
     se9_plus = [x for x in se9 if 'p' in x]
     se9_comma = [x for x in se9 if 'c' in x]
-    # se9_comma.remove('se_9mcb')
     y_plot, (plus, comma) = plt.subplots(2)
     plot(plus, se9_plus)
     plot(comma, se9_comma)
@@ -29,8 +21,6 @@ def compare_se9():
     hist_plot, ax2 = plt.subplots(1)
     plot_results_hist(ax2, se9)
     se9.append('se_9mcb')
-    # plus.set_xlim(left=0, right=50)
-    # comma.set_xlim(left=0, right=50)
 
     y_plot.set_size_inches(7, 7)
     y_plot.suptitle("Zbieżność od µ,λ")
@@ -55,9 +45,6 @@ def compare_se9():
 def compare_se1():
     se1 = [x for x in expr.keys() if 'se_1' in x]
     summary_table(se1)
-    # remove outliers runs
-    # se1.remove('sec_1mccb')
-    # se1.remove('sec_1mccs')
     se1_plus = [x for x in se1 if 'p' in x]
     se1_comma = [x for x in se1 if 'c' in x]
     y_plot, (plus, comma) = plt.subplots(2)
@@ -69,8 +56,6 @@ def compare_se1():
     plot_sigma(sigma, se1)
     hist_plot, ax2 = plt.subplots(1)
     plot_results_hist(ax2, se1)
-    # plus.set_xlim(left=0, right=125)
-    # comma.set_xlim(left=0, right=125)
 
     se1.append('se_1mcb')
     y_plot.set_size_inches(7, 7)

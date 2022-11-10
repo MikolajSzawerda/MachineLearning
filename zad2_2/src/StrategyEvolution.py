@@ -56,7 +56,7 @@ def strategy_evolution(func, init_pop, **kwargs):
         if candidate.value <= leader.value:
             leader = candidate
         # mutants.extend(population)
-        population = sorted(mutants, key=lambda x:x.value)[:kwargs['mi']]
+        population = sorted(mutants, key=lambda x: x.value)[:kwargs['mi']]
         logs.append(DataPoint(t, population))
         t += 1
     return logs, leader

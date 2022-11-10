@@ -3,8 +3,6 @@ from autograd import grad
 import autograd.numpy as np
 import autograd.numpy.random as npr
 from cec2017.simple import *
-import pandas as pd
-import concurrent.futures
 from collections import namedtuple
 
 
