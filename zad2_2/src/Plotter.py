@@ -14,7 +14,8 @@ se_comp9 = [x for x in expr.keys() if 'sec_9' in x]
 def remove_outliers(df, col):
     mean = df[col].mean()
     std = df[col].std()
-    return df[(df[col] <= mean+0.1*std)][col]
+    return df[col]
+    # return df[(df[col] <= mean+0.1*std)][col]
 
 def plot(ax, experiments):
     for name in experiments:
@@ -90,8 +91,8 @@ if __name__ == "__main__":
     se_comp9.remove('sec_9mccb')
     se_comp9.remove('sec_9uccb')
     se_comp9.remove('sec_9mccs')
-    # current_expr = ['gd_9best', 'csc_9tmces', 'sec_9mcpd']
-    current_expr = se_comp9
+    # current_expr = ['se_test']
+    current_expr = [x for x in expr.keys() if 'se_1' in x]
     table = summary_table(current_expr)
     table.to_csv(pjoin(path, "gradient_comp.csv"))
     print(table)

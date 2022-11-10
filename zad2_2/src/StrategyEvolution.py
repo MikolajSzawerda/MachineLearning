@@ -26,8 +26,8 @@ def crossover(population, **kwargs):
 #     for _ in range(kwargs['lambda']):
 #         a, b = choices(population, k=2)
 #         weights = npr.normal(size=kwargs['dim'])
-#         x = a.x * weights + (1-weights)*b.x
-#         sigma = a.sigma * weights + (1-weights)*b.sigma
+#         x = weights * a.x + (1-weights)*b.x
+#         sigma = weights * a.sigma + (1-weights)*b.sigma
 #         yield x, sigma
 
 

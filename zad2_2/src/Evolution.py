@@ -11,17 +11,18 @@ def stop_condition(t, **kwargs):
     return t >= kwargs['t_max']
 
 
-# # tournament
-# def reproduce(population, **kwargs):
-#     return [min(choices(population, k=2), key=lambda x: x.value)
-#             for _ in range(kwargs['pop_size'])]
-
-
-# roulette
+# tournament
 def reproduce(population, **kwargs):
-    s = sum(1/x.value for x in population)
-    p = [(1/x.value)/s for x in population]
-    return choices(population, p, k=kwargs['pop_size'])
+    return [min(choices(population, k=2), key=lambda x: x.value)
+            for _ in range(kwargs['pop_size'])]
+
+
+# # roulette
+# def reproduce(population, **kwargs):
+#     s = sum(1/x.value for x in population)
+#     p = [(1/x.value)/s for x in population]
+#     return choices(population, p, k=kwargs['pop_size'])
+
 
 # # no crossover
 # def crossover(population, **kwargs):
@@ -29,19 +30,19 @@ def reproduce(population, **kwargs):
 #         yield p.x
 
 
-# #uniform crosssover
-# def crossover(population, **kwargs):
-#     for _ in range(kwargs['pop_size']):
-#         a, b = choices(population, k=2)
-#         yield np.array([y[getrandbits(1)] for y in zip(a.x, b.x)])
-
-
-# mean
+#uniform crosssover
 def crossover(population, **kwargs):
     for _ in range(kwargs['pop_size']):
-        weights = npr.normal(size=kwargs['dim'])
         a, b = choices(population, k=2)
-        yield weights * a.x + (1-weights) * b.x
+        yield np.array([y[getrandbits(1)] for y in zip(a.x, b.x)])
+
+
+# # mean
+# def crossover(population, **kwargs):
+#     for _ in range(kwargs['pop_size']):
+#         weights = npr.normal(size=kwargs['dim'])
+#         a, b = choices(population, k=2)
+#         yield weights * a.x + (1-weights) * b.x
 
 
 def mutate(population, f, **kwargs):
