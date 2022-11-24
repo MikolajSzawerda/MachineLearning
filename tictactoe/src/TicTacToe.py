@@ -1,8 +1,13 @@
 from collections import namedtuple
 
-
 Player = namedtuple("Player", "char")
 GameState = namedtuple("GameState", "terminal result")
+empty_row = "   |   |   "
+filled_row = " {} | {} | {} "
+dashed_row = "---|---|---"
+board_format = "\n".join([empty_row, filled_row, dashed_row,
+                          filled_row, dashed_row, filled_row,
+                          empty_row])
 
 
 class State:
@@ -28,10 +33,10 @@ class State:
         return result
 
     def get_row(self, n):
-        return self.board[3*n:3*n+3]
+        return self.board[3 * n:3 * n + 3]
 
     def get_column(self, n):
-        return tuple(self.board[3*i+n] for i in range(3))
+        return tuple(self.board[3 * i + n] for i in range(3))
 
     def get_diagonal(self, n):
         if n == 0:
@@ -45,10 +50,11 @@ class State:
     def transform_state(self, index, char):
         if self.board[index] != ' ':
             raise ValueError("Field is not empty!")
-        return State(self.board[:index]+(char,)+self.board[index+1:])
+        return State(self.board[:index] + (char,) + self.board[index + 1:])
 
     def __str__(self):
-        return '\n'.join(('|'.join(self.get_row(i)) for i in range(3)))
+        return board_format.format(*self.board)
+        # return '\n'.join('|'.join(self.get_row(i)) for i in range(3))
 
 
 class Game:
@@ -92,3 +98,22 @@ class Game:
             self.make_move(move)
         recorder.append(''.join(self.board.board))
         return self.game_state.result, recorder
+
+    @staticmethod
+    def closing_credits(game_state: GameState):
+        if game_state.result != 'draw':
+            return f'Player {game_state.result} won!'
+        return f'Game ended with {game_state.result}'
+
+    def interactive_play(self, p1_input, p2_input, can_slide_turns: bool):
+        while not self.game_state.terminal:
+            print(self.board)
+            if self.current_turn % 2 == 0:
+                move = p1_input()
+            else:
+                move = p2_input()
+            self.make_move(move)
+            if can_slide_turns:
+                input("Next move...")
+        print(self.board)
+        print(self.closing_credits(self.game_state))

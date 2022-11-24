@@ -25,8 +25,8 @@ def won_board():
 
 def barely_won_board():
     return State((
-        'x', 'o', ' ',
-        ' ', 'x', ' ',
+        'x', 'o', 'x',
+        'o', 'x', 'o',
         'o', ' ', ' '
     ))
 
@@ -38,6 +38,13 @@ def draw_board():
         'o', 'o', 'x'
     ))
 
+
+def test_finding_all_optimas():
+    numbers = [(i, 100) for i in range(1, 10)] + [(i, -100) for i in range(12, 20)]
+    optimas = MinMax._find_all_optimas(numbers, max)
+    assert optimas == [i for i in range(1, 10)]
+    optimas = MinMax._find_all_optimas(numbers, min)
+    assert  optimas == [i for i in range(12, 20)]
 
 @pytest.mark.parametrize("board,result", [
     (empty_board(), 0),

@@ -1,6 +1,7 @@
 from TicTacToe import Player, Game, State, GameState
 from random import choice
 
+
 class MinMax:
     def __init__(self, depth=5, max_player=Player('x'), min_player=Player('o')):
         self.max_player = max_player
@@ -53,8 +54,8 @@ class MinMax:
         results = [(i, self.minimax(state.transform_state(i, player.char), self.depth-1, not is_max))
                    for i in state.empty_spaces]
         if is_max:
-            return max(results, key=lambda x: x[1])[0]
-        return min(results, key=lambda x: x[1])[0]
+            return choice(self._find_all_optimas(results, max))
+        return choice(self._find_all_optimas(results, min))
 
     def minimax(self, state: 'State', d, max_move: bool):
         game_state = Game.check_game_state(state)
