@@ -9,7 +9,7 @@ if __name__ == '__main__':
     Y = np.identity(2) * b[..., None]
     kernel_matrx = np.apply_along_axis(
         lambda xi: np.apply_along_axis(
-            lambda xj: kernel(xi, xj), 0, a
+            lambda xj: print(xi, xj), 0, a
         ), 0, a
     )
     w = alpha[..., None] * Y * kernel_matrx * Y * alpha

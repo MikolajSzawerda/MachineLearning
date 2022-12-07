@@ -1,0 +1,5 @@
+,success,kernel,kernel_param,penalty_param,time,N,model_path
+0,True,rbf,0.1,1.0,25.587370265,500,../models/rbf_1_01.pkl
+1,True,rbf,0.1,inf,25.428407344999997,500,../models/rbf_inf_01.pkl
+2,True,rbf,0.01,inf,14.646054369999995,500,../models/rbf_inf_001.pkl
+3,True,rbf,1.0,100.0,152.133295545,500,../models/rbf_100_1.pkl

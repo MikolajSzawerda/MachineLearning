@@ -1,0 +1,7 @@
+,Unnamed: 0,success,kernel,kernel_param,penalty_param,time,N,model_path,TP,TN,FP,FN
+0,0,True,rbf,0.1,0.1,0.3577928740000002,100,../models/rbf_01_01.pkl,130,344,0,26
+1,1,True,rbf,0.1,1.0,1.3652578430000002,100,../models/rbf_1_01.pkl,130,342,0,28
+2,2,True,rbf,0.1,100.0,1.2962249960000003,100,../models/rbf_100_01.pkl,130,342,0,28
+3,3,True,rbf,1.0,0.1,2.368337392999999,100,../models/rbf_01_1.pkl,130,340,0,30
+4,4,True,rbf,1.0,1.0,1.964008496,100,../models/rbf_1_1.pkl,130,341,0,29
+5,5,True,rbf,10.0,100.0,7.642608709000001,100,../models/rbf_100_10.pkl,130,342,0,28
