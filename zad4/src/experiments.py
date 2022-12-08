@@ -1,33 +1,33 @@
 EXPERIMENTS = [
-    # {
-    #     'C': float("inf"),
-    #     'kernel': 'rbf',
-    #     'kernel_param': 0.01,
-    #     'model_name': 'rbf_01'
-    # },
-#     {
-#         'C': 1.0,
-#         'kernel': 'linear',
-#         'kernel_param': None,
-#         'model_name': 'linear_1'
-#     },
-#     {
-#         'C': 100.0,
-#         'kernel': 'linear',
-#         'kernel_param': None,
-#         'model_name': 'linear_100'
-#     },
+    {
+        'C': 0.1,
+        'kernel': 'linear',
+        'kernel_param': None,
+        'model_name': 'linear_01'
+    },
+    {
+        'C': 10.0,
+        'kernel': 'linear',
+        'kernel_param': None,
+        'model_name': 'linear_10'
+    },
+    {
+        'C': 1000,
+        'kernel': 'linear',
+        'kernel_param': None,
+        'model_name': 'linear_001'
+    },
+    {
+        'C': 0.01,
+        'kernel': 'rbf',
+        'kernel_param': 0.01,
+        'model_name': 'rbf_001_001'
+    },
     {
         'C': 1.0,
         'kernel': 'rbf',
-        'kernel_param': 0.1,
-        'model_name': 'rbf_1_01'
-    },
-    {
-        'C': float("inf"),
-        'kernel': 'rbf',
-        'kernel_param': 0.1,
-        'model_name': 'rbf_inf_01'
+        'kernel_param': 0.01,
+        'model_name': 'rbf_1_001'
     },
     {
         'C': float("inf"),
@@ -36,21 +36,15 @@ EXPERIMENTS = [
         'model_name': 'rbf_inf_001'
     },
     {
-        'C': 100,
+        'C': 0.01,
         'kernel': 'rbf',
-        'kernel_param': 1.0,
-        'model_name': 'rbf_100_1'
+        'kernel_param': 0.001,
+        'model_name': 'rbf_001_0001'
     },
-    # {
-    #     'C': 1.0,
-    #     'kernel': 'rbf',
-    #     'kernel_param': 1.0,
-    #     'model_name': 'rbf_1_1'
-    # },
-    # {
-    #     'C': 100.0,
-    #     'kernel': 'rbf',
-    #     'kernel_param': 10,
-    #     'model_name': 'rbf_100_10'
-    # },
+    {
+        'C': float("inf"),
+        'kernel': 'rbf',
+        'kernel_param': 1,
+        'model_name': 'rbf_inf_1'
+    },
 ]

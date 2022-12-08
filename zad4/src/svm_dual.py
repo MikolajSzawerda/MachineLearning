@@ -1,16 +1,11 @@
 import numpy as np
-import scipy as scp
 from scipy.optimize import minimize, LinearConstraint, NonlinearConstraint
-import pandas as pd
-from math import isclose
 import joblib
 from utils import Model, decision, preprocess
-from collections import namedtuple
 from time import process_time
+from utils import Stats
 
 MODEL_PATH = '../models/'
-Stats = namedtuple("Stats", "success kernel kernel_param penalty_param time N model_path")
-
 
 kernels = {
     'linear': lambda u, v, p: np.dot(u, v),
@@ -34,7 +29,7 @@ def objective_func(alpha, kernel_matrix):
 
 
 def gradient(alpha, kernel_matrix):
-    return alpha.dot(kernel_matrix)-np.ones_like(alpha)
+    return alpha.dot(kernel_matrix) - np.ones_like(alpha)
 
 
 def extract_model(result, features, labels, scaler, kernel) -> Model:
@@ -61,7 +56,6 @@ def train(df, **kwargs):
                       alpha,
                       method='SLSQP',
                       jac=lambda a: gradient(a, labeled_kernel_matrix),
-                      # args=labeled_kernel_matrix,
                       bounds=((0, kwargs['C']) for _ in range(N)),
                       constraints=(
                           {'type': 'eq', 'fun': lambda a: np.dot(labels, a)}
@@ -72,12 +66,12 @@ def train(df, **kwargs):
         print(f"{kwargs['model_name']} succeed!")
         model = extract_model(result, features, labels, scaler, kernel)
         end = process_time()
-        filename = f'{MODEL_PATH}{kwargs["model_name"]}.pkl'
+        filename = f'{MODEL_PATH}{kwargs["model_id"]}.pkl'
         joblib.dump(model, filename, compress=1)
     else:
         print(f"{kwargs['model_name']} failed...")
         filename = None
         end = process_time()
-    return Stats(result['success'], kwargs['kernel'],
-                 kwargs['kernel_param'], kwargs['C'],
-                 end-start, N, filename)
+    return model, Stats(result['success'], kwargs['kernel'],
+                        kwargs['kernel_param'], kwargs['C'],
+                        end - start, N, filename, kwargs['model_name'])

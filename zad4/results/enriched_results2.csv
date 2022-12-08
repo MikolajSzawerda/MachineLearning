@@ -1,2 +1,0 @@
-,Unnamed: 0,success,kernel,kernel_param,penalty_param,time,N,model_path,TP,TN,FP,FN
-0,0,True,rbf,0.01,inf,15.206829087,500,../models/linear_01.pkl,1019,310,348,221
