@@ -1,0 +1,3 @@
+[submodule "Neural-network"]
+	path = Neural-network
+	url = git@github.com:MikolajSzawerda/Neural-network.git

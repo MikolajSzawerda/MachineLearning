@@ -60,7 +60,7 @@ $Y=diag(y)$
 
 W celu poprawy szybkości zbieżności solvera, wyprowadzam gradient optymalizowanej funkcji postaci:
 
-$\nabla \mathbb{D}(\alpha)=\varepsilon - \left \langle K,\alpha \right \rangle$
+$\nabla \mathbb{D}(\alpha)= \left \langle K,\alpha \right \rangle - \varepsilon$
 
 # Planowane eksperymenty numeryczne
 
@@ -118,7 +118,7 @@ W przypadku najgorszych uruchomień modele z liniowym jądrem osiągnęły mniej
 
 ### Najlepsze uruchomienia
 
-<img src="../plots/accuracy_best.png" alt="drawing" width="600"/>
+<img src="../plots/accuracy_best.png" alt="drawing" width="500"/>
 
 ### Najgorsze uruchomienia
 

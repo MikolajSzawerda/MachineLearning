@@ -1,4 +1,4 @@
-from GradientDescent import BacktrackStepGradient, RandomFixedStepGradient
+from source.GradientDescent import BacktrackStepGradient, RandomFixedStepGradient
 import autograd.numpy as np
 import pytest
 
@@ -36,8 +36,8 @@ def func(x):
 
 def test_random_fixed_step_gradient_many_points(monkeypatch):
     stepGradient = RandomFixedStepGradient(0.01, 1.1, 10)
-    monkeypatch.setattr("GradientDescent.RandomFixedStepGradient.generate_steps", generate_steps)
-    monkeypatch.setattr("GradientDescent.RandomFixedStepGradient.generate_points", generate_points)
+    monkeypatch.setattr("source.GradientDescent.RandomFixedStepGradient.generate_steps", generate_steps)
+    monkeypatch.setattr("source.GradientDescent.RandomFixedStepGradient.generate_points", generate_points)
     experiment = stepGradient.solver(func, [[-10, 10], [-10, 10]])
     assert len(experiment.recorders) > 0
 
@@ -45,6 +45,6 @@ def test_random_fixed_step_gradient_many_points(monkeypatch):
 def test_random_fixed_step_gradient_many_steps(monkeypatch):
     x0 = np.array([1.0, 1.0])
     stepGradient = RandomFixedStepGradient(0.01, 1.1, 10)
-    monkeypatch.setattr("GradientDescent.RandomFixedStepGradient.generate_steps", generate_steps)
+    monkeypatch.setattr("source.GradientDescent.RandomFixedStepGradient.generate_steps", generate_steps)
     experiment = stepGradient.solver(func, [[-10, 10], [-10, 10]], x0)
     assert len(experiment.recorders) > 0

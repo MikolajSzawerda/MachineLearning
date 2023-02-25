@@ -1,6 +1,5 @@
 from pytest import approx
-from gradient import calculateGradient, calculateHessian, calculate_step_bound
-from autograd import grad, jacobian, hessian, elementwise_grad as egrad
+from source.gradient import calculateGradient, calculateHessian, calculate_step_bound
 import autograd.numpy as np
 
 
